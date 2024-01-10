@@ -94,6 +94,41 @@ app.put('/users/:id', async (req, res) => {
     }
 });
 
+app.patch('/users/:id', async (req, res) => {
+    try {
+        const id = Number(req.params.id);
+        const {email, age, name} = req.body;
+
+        if (!Number.isInteger(id)) {
+            throw new Error('Wrong ID param')
+        }
+        if (age && (!age || !Number.isInteger(age) || age <= 0 || age > 100)) {
+            throw new Error('Wrong age');
+        }
+        if (email && (!email || !email.includes('@'))) {
+            throw new Error('Wrong email');
+        }
+        if (name && (!name || name.length <= 3)) {
+            throw new Error('Wrong name');
+        }
+
+        const users = await read();
+        const user = users.find(user => user.id === id);
+
+        if (!user) {
+            throw new Error('User not found')
+        }
+        if (name) user.name = name;
+        if (age) user.age = age;
+        if (email) user.email = email;
+
+        await write(users);
+        res.status(201).json({data: user});
+    } catch (e) {
+        res.status(400).json(e.message);
+    }
+});
+
 app.delete('/users/:id', async (req, res) => {
     try {
         const id = Number(req.params.id);
