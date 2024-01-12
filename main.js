@@ -24,12 +24,17 @@ app.get('/users/:id', async (req, res) => {
             throw new Error('Wrong ID param')
         }
         const users = await read();
-        const index = users.findIndex(user => user.id === id);
+        // const index = users.findIndex(user => user.id === id);
+        const user = users.find(user => user.id === id);
 
-        if (index === -1) {
+        if (!user) {
             throw new Error('User not found')
         }
-        res.status(200).json({data: users[index]})
+        // if (index === -1) {
+        //     throw new Error('User not found');
+        // }
+        // res.status(200).json({data: users[index]});
+        res.status(200).json({data: user});
     } catch (e) {
         res.status(400).json(e.message);
     }
