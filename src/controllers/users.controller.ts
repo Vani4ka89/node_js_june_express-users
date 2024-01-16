@@ -23,8 +23,8 @@ class UsersController {
     next: NextFunction,
   ): Promise<Response<IUser>> {
     try {
-      const id = Number(req.params.id);
-      const user = await usersService.getById(id);
+      const userId = Number(req.params.userId);
+      const user = await usersService.getById(userId);
       return res.json({ data: user });
     } catch (e) {
       next(e);
@@ -50,8 +50,8 @@ class UsersController {
     next: NextFunction,
   ): Promise<Response<IUser>> {
     try {
-      const id = Number(req.params.id);
-      const updatedUser = await usersService.updateById(id, req.body);
+      const userId = Number(req.params);
+      const updatedUser = await usersService.updateById(userId, req.body);
       return res.json({ data: updatedUser });
     } catch (e) {
       next(e);
@@ -64,8 +64,11 @@ class UsersController {
     next: NextFunction,
   ): Promise<Response<IUser>> {
     try {
-      const id = Number(req.params.id);
-      const updatedUser = await usersService.partialUpdateById(id, req.body);
+      const userId = Number(req.params);
+      const updatedUser = await usersService.partialUpdateById(
+        userId,
+        req.body,
+      );
       return res.status(201).json({ data: updatedUser });
     } catch (e) {
       next(e);
@@ -78,8 +81,8 @@ class UsersController {
     next: NextFunction,
   ): Promise<Response<void>> {
     try {
-      const id = Number(req.params.id);
-      await usersService.deleteById(id);
+      const userId = Number(req.params);
+      await usersService.deleteById(userId);
       return res.status(204).json({ message: "User deleted" });
     } catch (e) {
       next(e);

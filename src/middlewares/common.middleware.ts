@@ -1,5 +1,4 @@
 import { NextFunction, Request, Response } from "express";
-import { isObjectIdOrHexString } from "mongoose";
 
 import { ApiError } from "../errors/api.error";
 
@@ -7,8 +6,8 @@ class CommonMiddleware {
   public isIdValid(field: string) {
     return (req: Request, res: Response, next: NextFunction) => {
       try {
-        const id = Number(req.params[field]);
-        if (!isObjectIdOrHexString(id)) {
+        const userId = Number(req.params[field]);
+        if (!Number.isInteger(userId)) {
           throw new ApiError("Wrong ID param", 400);
         }
         next();
