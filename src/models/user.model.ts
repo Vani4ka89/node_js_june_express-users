@@ -1,24 +1,41 @@
-import {model, Schema} from "mongoose";
-import {IUser} from "../interfaces/user.interface";
+import { model, Schema } from "mongoose";
 
-const userSchema = new Schema({
+import { EGenders } from "../enums/user.enum";
+import { IUser } from "../interfaces/user.interface";
+
+const userSchema = new Schema(
+  {
     name: {
-        type: String
+      type: String,
+      required: true,
     },
     age: {
-        type: Number
+      type: Number,
+      min: 1,
+      max: 100,
+      required: true,
+    },
+    gender: {
+      type: String,
+      enum: EGenders,
     },
     email: {
-        type: String,
-        unique: true
+      type: String,
+      unique: true,
+      lowercase: true,
+      trim: true,
+      required: true,
     },
     password: {
-        type: String,
-        selected: false
-    }
-}, {
+      type: String,
+      selected: false,
+      required: true,
+    },
+  },
+  {
     versionKey: false,
-    timestamps: true
-})
+    timestamps: true,
+  },
+);
 
-export const User = model<IUser>('user', userSchema);
+export const User = model<IUser>("user", userSchema);

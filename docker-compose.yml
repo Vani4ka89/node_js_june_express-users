@@ -1,7 +1,8 @@
 version: 4.1.2
 
 services:
-  june2023:
+
+  db:
     image: mongo
     env_file:
       - .env
@@ -11,3 +12,17 @@ services:
       - ./mongo_db:/data/db
       - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js
     restart: on-failure
+
+#  app:
+#    build:
+#      context: .
+#    env_file:
+#      - .env
+#    ports:
+#      - "5555:$PORT"
+#    volumes:
+#      - ./dist:/app
+#      - /app/node_modules
+#    restart: on-failure
+#    command: sh -c "node --watch app.js"
+

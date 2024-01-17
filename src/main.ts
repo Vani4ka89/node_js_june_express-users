@@ -1,4 +1,5 @@
 import express, { Request, Response } from "express";
+import mongoose from "mongoose";
 
 import { configs } from "./configs/configs";
 import { ApiError } from "./errors/api.error";
@@ -20,6 +21,7 @@ app.use("*", (err: ApiError, req: Request, res: Response) => {
   });
 });
 
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
+  await mongoose.connect(configs.DB_URL);
   console.log(`Server started on port ${PORT}`);
 });

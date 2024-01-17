@@ -23,9 +23,9 @@ class UsersController {
     next: NextFunction,
   ): Promise<Response<IUser>> {
     try {
-      const userId = Number(req.params.userId);
+      const userId = req.params.userId;
       const user = await usersService.getById(userId);
-      return res.json({ data: user });
+      return res.status(200).json({ data: user });
     } catch (e) {
       next(e);
     }
@@ -37,8 +37,8 @@ class UsersController {
     next: NextFunction,
   ): Promise<Response<IUser>> {
     try {
-      const newUser = await usersService.create(req.body);
-      return res.json({ data: newUser });
+      const newUser = await usersService.create(req.body as Partial<IUser>);
+      return res.status(201).json({ data: newUser });
     } catch (e) {
       next(e);
     }
@@ -50,30 +50,30 @@ class UsersController {
     next: NextFunction,
   ): Promise<Response<IUser>> {
     try {
-      const userId = Number(req.params);
+      const userId = req.params.userId;
       const updatedUser = await usersService.updateById(userId, req.body);
-      return res.json({ data: updatedUser });
+      return res.status(200).json({ data: updatedUser });
     } catch (e) {
       next(e);
     }
   }
 
-  public async partialUpdateById(
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ): Promise<Response<IUser>> {
-    try {
-      const userId = Number(req.params);
-      const updatedUser = await usersService.partialUpdateById(
-        userId,
-        req.body,
-      );
-      return res.status(201).json({ data: updatedUser });
-    } catch (e) {
-      next(e);
-    }
-  }
+  // public async partialUpdateById(
+  //   req: Request,
+  //   res: Response,
+  //   next: NextFunction,
+  // ): Promise<Response<IUser>> {
+  //   try {
+  //     const userId = req.params.userId;
+  //     const updatedUser = await usersService.partialUpdateById(
+  //       userId,
+  //       req.body,
+  //     );
+  //     return res.status(200).json({ data: updatedUser });
+  //   } catch (e) {
+  //     next(e);
+  //   }
+  // }
 
   public async deleteById(
     req: Request,
@@ -81,7 +81,7 @@ class UsersController {
     next: NextFunction,
   ): Promise<Response<void>> {
     try {
-      const userId = Number(req.params);
+      const userId = req.params.userId;
       await usersService.deleteById(userId);
       return res.status(204).json({ message: "User deleted" });
     } catch (e) {

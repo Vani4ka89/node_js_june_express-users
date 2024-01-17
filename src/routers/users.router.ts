@@ -21,11 +21,11 @@ router.put(
   usersController.updateById,
 );
 
-router.patch(
-  "/:userId",
-  commonMiddleware.isIdValid("userId"),
-  usersController.partialUpdateById,
-);
+// router.patch(
+//   "/:userId",
+//   commonMiddleware.isIdValid("userId"),
+//   usersController.partialUpdateById,
+// );
 
 router.delete(
   "/:userId",
