@@ -5,3 +5,7 @@ node_modules
 .env
 
 /.idea/
+.idea/.gitignore
+.idea/modules.xml
+.idea/misc.xml
+.idea/vcs.xml
