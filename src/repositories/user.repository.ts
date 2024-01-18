@@ -1,3 +1,5 @@
+import { FilterQuery } from "mongoose";
+
 import { User } from "../models";
 import { IUser } from "../types";
 
@@ -8,6 +10,10 @@ class UserRepository {
 
   public async getById(userId: string): Promise<IUser> {
     return await User.findOne({ _id: userId });
+  }
+
+  public async getByParams(params: FilterQuery<IUser>): Promise<IUser> {
+    return await User.findOne(params);
   }
 
   public async create(data: Partial<IUser>): Promise<IUser> {

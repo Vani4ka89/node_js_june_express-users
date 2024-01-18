@@ -10,10 +10,10 @@ const tokenSchema = new Schema(
       required: true,
     },
     refreshToken: {
-      type: Number,
+      type: String,
       required: true,
     },
-    _useId: {
+    _userId: {
       type: Types.ObjectId,
       required: true,
       ref: User,
