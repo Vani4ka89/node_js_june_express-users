@@ -1,10 +1,9 @@
 import express, { Request, Response } from "express";
 import mongoose from "mongoose";
 
-import { configs } from "./configs/configs";
-import { ApiError } from "./errors/api.error";
-import { authRouter } from "./routers/auth.router";
-import { usersRouter } from "./routers/users.router";
+import { configs } from "./configs";
+import { ApiError } from "./errors";
+import { authRouter, usersRouter } from "./routers";
 
 const app = express();
 const PORT = configs.PORT;
