@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 
-import { IUser } from "../interfaces/user.interface";
-import { usersService } from "../services/users.service";
+import { IUser } from "../interfaces";
+import { usersService } from "../services";
 
 class UsersController {
   public async getAll(

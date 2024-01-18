@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { ObjectSchema } from "joi";
 import { isObjectIdOrHexString } from "mongoose";
 
-import { ApiError } from "../errors/api.error";
+import { ApiError } from "../errors";
 
 class CommonMiddleware {
   public isIdValid(field: string) {

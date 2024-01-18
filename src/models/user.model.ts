@@ -1,7 +1,7 @@
 import { model, Schema } from "mongoose";
 
-import { EGenders } from "../enums/user.enum";
-import { IUser } from "../interfaces/user.interface";
+import { EGenders } from "../enums";
+import { IUser } from "../interfaces";
 
 const userSchema = new Schema(
   {
@@ -28,7 +28,7 @@ const userSchema = new Schema(
     },
     password: {
       type: String,
-      selected: false,
+      // selected: false,
       required: true,
     },
   },
