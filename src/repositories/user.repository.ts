@@ -1,5 +1,5 @@
-import { IUser } from "../interfaces";
 import { User } from "../models";
+import { IUser } from "../types";
 
 class UserRepository {
   public async getAll(): Promise<IUser[]> {
