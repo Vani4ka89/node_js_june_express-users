@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 
 import { authService } from "../services";
-import { ITokenPair, IUser } from "../types";
+import { ITokenPair, ITokenPayload, IUser } from "../types";
 import { ILogin } from "../types";
 
 class AuthController {
@@ -27,6 +27,21 @@ class AuthController {
     try {
       const body = req.body as ILogin;
       const jwtTokens = await authService.signIn(body);
+      return res.json({ data: jwtTokens });
+    } catch (e) {
+      next(e);
+    }
+  }
+
+  public async refresh(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<Response<ITokenPair>> {
+    try {
+      const oldTokenPair = req.res.locals.oldTokenPair as ITokenPair;
+      const tokenPayload = req.res.locals.tokenPayload as ITokenPayload;
+      const jwtTokens = await authService.refresh(oldTokenPair, tokenPayload);
       return res.json({ data: jwtTokens });
     } catch (e) {
       next(e);
