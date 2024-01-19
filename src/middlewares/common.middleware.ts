@@ -8,8 +8,8 @@ class CommonMiddleware {
   public isIdValid(field: string) {
     return (req: Request, res: Response, next: NextFunction) => {
       try {
-        const userId = req.params[field];
-        if (!isObjectIdOrHexString(userId)) {
+        const id = req.params[field];
+        if (!isObjectIdOrHexString(id)) {
           throw new ApiError("Wrong ID param", 400);
         }
         next();
@@ -27,6 +27,7 @@ class CommonMiddleware {
           throw new ApiError(error.message, 400);
         }
         req.body = value;
+        next();
       } catch (e) {
         next(e);
       }

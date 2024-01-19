@@ -37,10 +37,11 @@ class AuthMiddleware {
     next: NextFunction,
   ): Promise<void> {
     try {
-      const refreshToken = req.get("Authorization");
-      if (!refreshToken) {
+      const tokenString = req.get("Authorization");
+      if (!tokenString) {
         throw new ApiError("No token", 401);
       }
+      const refreshToken = tokenString.split("Bearer ")[1];
       const payload = tokenService.checkToken(refreshToken, ETokenType.Refresh);
       const entity = await Token.findOne({ refreshToken });
       if (!entity) {
