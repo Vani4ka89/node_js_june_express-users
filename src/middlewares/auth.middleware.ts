@@ -14,17 +14,18 @@ class AuthMiddleware {
     next: NextFunction,
   ): Promise<void> {
     try {
-      const accessToken = req.get("Authorization");
-      if (!accessToken) {
+      const tokenString = req.get("Authorization");
+      if (!tokenString) {
         throw new ApiError("No token", 401);
       }
+      const accessToken = tokenString.split("Bearer ")[1];
       const payload = tokenService.checkToken(accessToken, ETokenType.Access);
       const entity = await Token.findOne({ accessToken });
       if (!entity) {
         throw new ApiError("Token not valid", 401);
       }
-      req.res.locals.tokenPayload = { _userId: payload._userId };
       req.res.locals.oldTokenPair = entity;
+      req.res.locals.jwtPayload = { _userId: payload._userId };
       next();
     } catch (e) {
       next(e);
@@ -48,7 +49,7 @@ class AuthMiddleware {
         throw new ApiError("Token not valid", 401);
       }
       req.res.locals.oldTokenPair = entity;
-      req.res.locals.tokenPayload = { _userId: payload._userId };
+      req.res.locals.jwtPayload = { _userId: payload._userId };
       next();
     } catch (e) {
       next(e);

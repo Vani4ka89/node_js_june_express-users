@@ -40,7 +40,7 @@ class AuthController {
   ): Promise<Response<ITokenPair>> {
     try {
       const oldTokenPair = req.res.locals.oldTokenPair as ITokenPair;
-      const tokenPayload = req.res.locals.tokenPayload as ITokenPayload;
+      const tokenPayload = req.res.locals.jwtPayload as ITokenPayload;
       const jwtTokens = await authService.refresh(oldTokenPair, tokenPayload);
       return res.json({ data: jwtTokens });
     } catch (e) {

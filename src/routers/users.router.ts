@@ -1,7 +1,8 @@
 import { Router } from "express";
 
 import { usersController } from "../controllers";
-import { commonMiddleware } from "../middlewares";
+import { authMiddleware, commonMiddleware } from "../middlewares";
+import { UserValidator } from "../validators";
 
 const router = Router();
 
@@ -17,13 +18,14 @@ router.post("/", usersController.create);
 
 router.put(
   "/:userId",
+  commonMiddleware.isBodyValid(UserValidator.update),
   commonMiddleware.isIdValid("userId"),
+  authMiddleware.checkAccessToken,
   usersController.updateById,
 );
 
 // router.patch(
 //   "/:userId",
-//   commonMiddleware.isIdValid("userId"),
 //   usersController.partialUpdateById,
 // );
 

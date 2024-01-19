@@ -6,7 +6,7 @@ import { ApiError } from "../errors";
 import { ITokenPair, ITokenPayload } from "../types";
 
 class TokenService {
-  public async generateTokenPair(payload: ITokenPayload): Promise<ITokenPair> {
+  public generateTokenPair(payload: ITokenPayload): ITokenPair {
     const accessToken = jwt.sign(payload, configs.JWT_ACCESS_SECRET, {
       expiresIn: "30m",
     });

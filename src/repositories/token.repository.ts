@@ -1,8 +1,8 @@
 import { Token } from "../models";
-import { IToken } from "../types";
+import { IToken, ITokenPair } from "../types";
 
 class TokenRepository {
-  public async create(data: Partial<IToken>) {
+  public async create(data: Partial<IToken>): Promise<ITokenPair> {
     return await Token.create(data);
   }
 }

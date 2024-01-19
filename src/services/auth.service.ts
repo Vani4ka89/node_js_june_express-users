@@ -26,7 +26,7 @@ class AuthService {
     if (!isMatched) {
       throw new ApiError("Invalid email or password", 401);
     }
-    const jwtTokens = await tokenService.generateTokenPair({
+    const jwtTokens = tokenService.generateTokenPair({
       _userId: user._id,
     });
     await tokenRepository.create({ ...jwtTokens, _userId: user._id });
@@ -38,7 +38,7 @@ class AuthService {
     tokenPayload: ITokenPayload,
   ): Promise<ITokenPair> {
     try {
-      const jwtTokens = await tokenService.generateTokenPair(tokenPayload);
+      const jwtTokens = tokenService.generateTokenPair(tokenPayload);
       return await authRepository.refresh(
         jwtTokens,
         tokenPayload,
