@@ -1,3 +1,4 @@
+import { EEmailActions } from "../enums";
 import { ApiError } from "../errors";
 import {
   authRepository,
@@ -5,12 +6,31 @@ import {
   userRepository,
 } from "../repositories";
 import { ILogin, ITokenPair, ITokenPayload, IUser } from "../types";
+import { emailService } from "./email.service";
 import { passwordService } from "./password.service";
 import { tokenService } from "./token.service";
 
 class AuthService {
   public async signUp(dto: Partial<IUser>): Promise<IUser> {
     const hashedPassword = await passwordService.hash(dto.password);
+    // const users = await userRepository.getAll();
+    // const users = [
+    //   { email: "", name: "" },
+    //   { email: "", name: "" },
+    // ];
+    //
+    // await Promise.all(
+    //   users.map(
+    //     async (user) =>
+    //       await emailService.sendMail(user.email, EEmailActions.WELCOME, {
+    //         name: user.name,
+    //       }),
+    //   ),
+    // );
+
+    await emailService.sendMail(dto.email, EEmailActions.WELCOME, {
+      name: dto.name,
+    });
     return await authRepository.signUp(dto, hashedPassword);
   }
 
