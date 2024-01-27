@@ -1,4 +1,4 @@
-import { EEmailActions } from "../enums";
+import { EEmailActions, ERole } from "../enums";
 import { ApiError } from "../errors";
 import {
   authRepository,
@@ -11,6 +11,38 @@ import { passwordService } from "./password.service";
 import { tokenService } from "./token.service";
 
 class AuthService {
+  public async signUpAdmin(dto: Partial<IUser>): Promise<IUser> {
+    const hashedPassword = await passwordService.hash(dto.password);
+
+    return await authRepository.signUpAdmin(dto, hashedPassword);
+  }
+
+  public async signInAdmin(dto: ILogin): Promise<ITokenPair> {
+    const user = await userRepository.getByParams({
+      email: dto.email,
+      role: ERole.ADMIN,
+    });
+    if (!user) {
+      throw new ApiError("Invalid email or password", 401);
+    }
+    const isMatched = await passwordService.compare(
+      dto.password,
+      user.password,
+    );
+    if (!isMatched) {
+      throw new ApiError("Invalid email or password", 401);
+    }
+    const jwtTokens = tokenService.generateTokenPair(
+      {
+        _userId: user._id,
+        role: ERole.ADMIN,
+      },
+      ERole.ADMIN,
+    );
+    await tokenRepository.create({ ...jwtTokens, _userId: user._id });
+    return jwtTokens;
+  }
+
   public async signUp(dto: Partial<IUser>): Promise<IUser> {
     const hashedPassword = await passwordService.hash(dto.password);
     // const users = await userRepository.getAll();
@@ -46,9 +78,13 @@ class AuthService {
     if (!isMatched) {
       throw new ApiError("Invalid email or password", 401);
     }
-    const jwtTokens = tokenService.generateTokenPair({
-      _userId: user._id,
-    });
+    const jwtTokens = tokenService.generateTokenPair(
+      {
+        _userId: user._id,
+        role: ERole.USER,
+      },
+      ERole.USER,
+    );
     await tokenRepository.create({ ...jwtTokens, _userId: user._id });
     return jwtTokens;
   }
@@ -58,7 +94,16 @@ class AuthService {
     tokenPayload: ITokenPayload,
   ): Promise<ITokenPair> {
     try {
-      const jwtTokens = tokenService.generateTokenPair(tokenPayload);
+      const user = await userRepository.getById(
+        tokenPayload._userId.toString(),
+      );
+      const jwtTokens = tokenService.generateTokenPair(
+        {
+          _userId: tokenPayload._userId,
+          role: user.role,
+        },
+        user.role,
+      );
       return await authRepository.refresh(
         jwtTokens,
         tokenPayload,

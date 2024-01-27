@@ -29,15 +29,6 @@ class UserRepository {
     });
   }
 
-  // public async partialUpdateById(
-  //   userId: string,
-  //   data: Partial<IUser>,
-  // ): Promise<IUser> {
-  //   return await User.findByIdAndUpdate(userId, data, {
-  //     returnDocument: "after",
-  //   });
-  // }
-
   public async deleteById(userId: string): Promise<IUser> {
     return await User.findByIdAndDelete(userId);
   }

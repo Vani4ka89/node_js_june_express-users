@@ -1,12 +1,28 @@
+import { ERole } from "../enums";
 import { Token, User } from "../models";
 import { ITokenPair, ITokenPayload, IUser } from "../types";
 
 class AuthRepository {
+  public async signUpAdmin(
+    dto: Partial<IUser>,
+    hashedPassword: string,
+  ): Promise<IUser> {
+    return await User.create({
+      ...dto,
+      password: hashedPassword,
+      role: ERole.ADMIN,
+    });
+  }
+
   public async signUp(
     dto: Partial<IUser>,
     hashedPassword: string,
   ): Promise<IUser> {
-    return await User.create({ ...dto, password: hashedPassword });
+    return await User.create({
+      ...dto,
+      password: hashedPassword,
+      role: ERole.ADMIN,
+    });
   }
 
   public async refresh(

@@ -18,13 +18,6 @@ class UsersService {
     return await userRepository.updateById(userId, data);
   }
 
-  // public async partialUpdateById(
-  //   userId: string,
-  //   data: Partial<IUser>,
-  // ): Promise<IUser> {
-  //   return await userRepository.partialUpdateById(userId, data);
-  // }
-
   public async deleteById(userId: string): Promise<void> {
     await userRepository.deleteById(userId);
   }

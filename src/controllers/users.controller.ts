@@ -58,23 +58,6 @@ class UsersController {
     }
   }
 
-  // public async partialUpdateById(
-  //   req: Request,
-  //   res: Response,
-  //   next: NextFunction,
-  // ): Promise<Response<IUser>> {
-  //   try {
-  //     const userId = req.params.userId;
-  //     const updatedUser = await usersService.partialUpdateById(
-  //       userId,
-  //       req.body,
-  //     );
-  //     return res.status(200).json({ data: updatedUser });
-  //   } catch (e) {
-  //     next(e);
-  //   }
-  // }
-
   public async deleteById(
     req: Request,
     res: Response,

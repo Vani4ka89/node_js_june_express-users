@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 
+import { ERole } from "../enums";
 import { ApiError } from "../errors";
 import { User } from "../models";
 import { IUser } from "../types";
@@ -37,6 +38,24 @@ class UserMiddleware {
           throw new ApiError("User not found", 422);
         }
         req.res.locals.user = user;
+        next();
+      } catch (e) {
+        next(e);
+      }
+    };
+  }
+
+  public haveAccessByRole(...roles: ERole[]) {
+    return async (
+      req: Request,
+      res: Response,
+      next: NextFunction,
+    ): Promise<void> => {
+      try {
+        const payload = req.res.locals.jwtPayload;
+        if (!roles.includes(payload?.role)) {
+          throw new ApiError("Access denied", 403);
+        }
         next();
       } catch (e) {
         next(e);

@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 
-import { ETokenType } from "../enums";
+import { ERole, ETokenType } from "../enums";
 // import { EActionTokenTypes, ETokenType } from "../enums";
 import { ApiError } from "../errors";
 // import { Action, Token } from "../models";
@@ -8,52 +8,64 @@ import { Token } from "../models";
 import { tokenService } from "../services";
 
 class AuthMiddleware {
-  public async checkAccessToken(
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ): Promise<void> {
-    try {
-      const tokenString = req.get("Authorization");
-      if (!tokenString) {
-        throw new ApiError("No token", 401);
+  public checkAccessToken(role: ERole) {
+    return async (
+      req: Request,
+      res: Response,
+      next: NextFunction,
+    ): Promise<void> => {
+      try {
+        const tokenString = req.get("Authorization");
+        if (!tokenString) {
+          throw new ApiError("No token", 401);
+        }
+        const accessToken = tokenString.split("Bearer ")[1];
+        const payload = tokenService.checkToken(
+          accessToken,
+          ETokenType.Access,
+          role,
+        );
+        const entity = await Token.findOne({ accessToken });
+        if (!entity) {
+          throw new ApiError("Token not valid", 401);
+        }
+        req.res.locals.oldTokenPair = entity;
+        req.res.locals.jwtPayload = { _userId: payload._userId };
+        next();
+      } catch (e) {
+        next(e);
       }
-      const accessToken = tokenString.split("Bearer ")[1];
-      const payload = tokenService.checkToken(accessToken, ETokenType.Access);
-      const entity = await Token.findOne({ accessToken });
-      if (!entity) {
-        throw new ApiError("Token not valid", 401);
-      }
-      req.res.locals.oldTokenPair = entity;
-      req.res.locals.jwtPayload = { _userId: payload._userId };
-      next();
-    } catch (e) {
-      next(e);
-    }
+    };
   }
 
-  public async checkRefreshToken(
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ): Promise<void> {
-    try {
-      const tokenString = req.get("Authorization");
-      if (!tokenString) {
-        throw new ApiError("No token", 401);
+  public checkRefreshToken(role: ERole) {
+    return async (
+      req: Request,
+      res: Response,
+      next: NextFunction,
+    ): Promise<void> => {
+      try {
+        const tokenString = req.get("Authorization");
+        if (!tokenString) {
+          throw new ApiError("No token", 401);
+        }
+        const refreshToken = tokenString.split("Bearer ")[1];
+        const payload = tokenService.checkToken(
+          refreshToken,
+          ETokenType.Refresh,
+          role,
+        );
+        const entity = await Token.findOne({ refreshToken });
+        if (!entity) {
+          throw new ApiError("Token not valid", 401);
+        }
+        req.res.locals.oldTokenPair = entity;
+        req.res.locals.jwtPayload = { _userId: payload._userId };
+        next();
+      } catch (e) {
+        next(e);
       }
-      const refreshToken = tokenString.split("Bearer ")[1];
-      const payload = tokenService.checkToken(refreshToken, ETokenType.Refresh);
-      const entity = await Token.findOne({ refreshToken });
-      if (!entity) {
-        throw new ApiError("Token not valid", 401);
-      }
-      req.res.locals.oldTokenPair = entity;
-      req.res.locals.jwtPayload = { _userId: payload._userId };
-      next();
-    } catch (e) {
-      next(e);
-    }
+    };
   }
 
   // public checkActionToken(tokenType: EActionTokenTypes) {

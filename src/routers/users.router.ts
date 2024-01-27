@@ -1,6 +1,7 @@
 import { Router } from "express";
 
 import { usersController } from "../controllers";
+import { ERole } from "../enums";
 import { authMiddleware, commonMiddleware } from "../middlewares";
 import { UserValidator } from "../validators";
 
@@ -11,6 +12,7 @@ router.get("/", usersController.getAll);
 router.get(
   "/:userId",
   commonMiddleware.isIdValid("userId"),
+  authMiddleware.checkAccessToken(ERole.USER),
   usersController.getById,
 );
 
@@ -20,18 +22,14 @@ router.put(
   "/:userId",
   commonMiddleware.isBodyValid(UserValidator.update),
   commonMiddleware.isIdValid("userId"),
-  authMiddleware.checkAccessToken,
+  authMiddleware.checkAccessToken(ERole.USER),
   usersController.updateById,
 );
 
-// router.patch(
-//   "/:userId",
-//   usersController.partialUpdateById,
-// );
-
 router.delete(
   "/:userId",
-  commonMiddleware.isIdValid("userId"),
+  // commonMiddleware.isIdValid("userId"),
+  // authMiddleware.checkAccessToken(ERole.USER),
   usersController.deleteById,
 );
 
