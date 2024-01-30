@@ -55,23 +55,6 @@ class TokenService {
     }
   }
 
-  private checkTokenUser(token: string, type: ETokenType): ITokenPayload {
-    try {
-      let secret: string;
-      switch (type) {
-        case ETokenType.Access:
-          secret = configs.JWT_ACCESS_SECRET;
-          break;
-        case ETokenType.Refresh:
-          secret = configs.JWT_REFRESH_SECRET;
-          break;
-      }
-      return jwt.verify(token, secret) as ITokenPayload;
-    } catch (e) {
-      throw new ApiError("Token not valid", 401);
-    }
-  }
-
   private checkTokenAdmin(token: string, type: ETokenType): ITokenPayload {
     try {
       let secret: string;
@@ -81,6 +64,23 @@ class TokenService {
           break;
         case ETokenType.Refresh:
           secret = configs.JWT_ADMIN_REFRESH_SECRET;
+          break;
+      }
+      return jwt.verify(token, secret) as ITokenPayload;
+    } catch (e) {
+      throw new ApiError("Token not valid", 401);
+    }
+  }
+
+  private checkTokenUser(token: string, type: ETokenType): ITokenPayload {
+    try {
+      let secret: string;
+      switch (type) {
+        case ETokenType.Access:
+          secret = configs.JWT_ACCESS_SECRET;
+          break;
+        case ETokenType.Refresh:
+          secret = configs.JWT_REFRESH_SECRET;
           break;
       }
       return jwt.verify(token, secret) as ITokenPayload;

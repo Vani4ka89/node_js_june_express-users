@@ -31,19 +31,6 @@ class UsersController {
     }
   }
 
-  public async create(
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ): Promise<Response<IUser>> {
-    try {
-      const newUser = await usersService.create(req.body as Partial<IUser>);
-      return res.status(201).json({ data: newUser });
-    } catch (e) {
-      next(e);
-    }
-  }
-
   public async updateById(
     req: Request,
     res: Response,

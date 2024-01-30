@@ -10,10 +10,6 @@ class UsersService {
     return await userRepository.getById(userId);
   }
 
-  public async create(data: Partial<IUser>): Promise<IUser> {
-    return await userRepository.create(data);
-  }
-
   public async updateById(userId: string, data: IUser): Promise<IUser> {
     return await userRepository.updateById(userId, data);
   }

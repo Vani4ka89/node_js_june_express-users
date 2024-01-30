@@ -38,7 +38,7 @@ class EmailService {
     email: string | string[],
     emailAction: EEmailActions,
     context: Record<string, string | number>,
-  ) {
+  ): Promise<void> {
     const { templateName, subject } = emailTemplates[emailAction];
     const mailOptions = {
       to: email,

@@ -14,7 +14,7 @@ class AuthService {
   public async signUpAdmin(dto: Partial<IUser>): Promise<IUser> {
     const hashedPassword = await passwordService.hash(dto.password);
 
-    return await authRepository.signUpAdmin(dto, hashedPassword);
+    return await userRepository.signUpAdmin(dto, hashedPassword);
   }
 
   public async signInAdmin(dto: ILogin): Promise<ITokenPair> {
@@ -45,25 +45,11 @@ class AuthService {
 
   public async signUp(dto: Partial<IUser>): Promise<IUser> {
     const hashedPassword = await passwordService.hash(dto.password);
-    // const users = await userRepository.getAll();
-    // const users = [
-    //   { email: "", name: "" },
-    //   { email: "", name: "" },
-    // ];
-    //
-    // await Promise.all(
-    //   users.map(
-    //     async (user) =>
-    //       await emailService.sendMail(user.email, EEmailActions.WELCOME, {
-    //         name: user.name,
-    //       }),
-    //   ),
-    // );
 
     await emailService.sendMail(dto.email, EEmailActions.WELCOME, {
       name: dto.name,
     });
-    return await authRepository.signUp(dto, hashedPassword);
+    return await userRepository.signUp(dto, hashedPassword);
   }
 
   public async signIn(dto: ILogin): Promise<ITokenPair> {
