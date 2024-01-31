@@ -14,8 +14,8 @@ const router = Router();
 
 router.post(
   "/admin/sign-up",
-  // commonMiddleware.isBodyValid(UserValidator.create),
-  // userMiddleware.findAndThrow("email"),
+  commonMiddleware.isBodyValid(UserValidator.create),
+  userMiddleware.findAndThrow("email"),
   authController.signUpAdmin,
 );
 
