@@ -3,6 +3,7 @@ import { NextFunction, Request, Response } from "express";
 import { ERole } from "../enums";
 import { ApiError } from "../errors";
 import { User } from "../models";
+import { userRepository } from "../repositories";
 import { IUser } from "../types";
 
 class UserMiddleware {
@@ -31,13 +32,13 @@ class UserMiddleware {
       next: NextFunction,
     ): Promise<void> => {
       try {
-        const user = await User.findOne({ [field]: req.body[field] }).select(
-          "password",
-        );
+        const user = await userRepository.getByParams({
+          [field]: req.body[field],
+        });
         if (!user) {
-          throw new ApiError("User not found", 422);
+          throw new ApiError("User not found", 404);
         }
-        req.res.locals.user = user;
+        req.res.locals = user;
         next();
       } catch (e) {
         next(e);
