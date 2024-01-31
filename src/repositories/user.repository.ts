@@ -23,9 +23,10 @@ class UserRepository {
     return await User.create({
       ...dto,
       password: hashedPassword,
-      role: ERole.ADMIN,
+      role: ERole.USER,
     });
   }
+
   public async getAll(): Promise<IUser[]> {
     return await User.find({});
   }
@@ -47,8 +48,8 @@ class UserRepository {
     });
   }
 
-  public async deleteById(userId: string): Promise<IUser> {
-    return await User.findByIdAndDelete(userId);
+  public async deleteById(userId: string): Promise<void> {
+    await User.findByIdAndDelete(userId);
   }
 }
 

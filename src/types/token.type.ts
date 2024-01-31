@@ -14,6 +14,6 @@ export interface IToken extends ITokenPair {
 }
 
 export interface ITokenPayload {
-  _userId: Types.ObjectId;
+  _userId: string;
   role: ERole;
 }

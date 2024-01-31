@@ -67,9 +67,9 @@ class AuthController {
     next: NextFunction,
   ): Promise<Response<ITokenPair>> {
     try {
-      const oldTokenPair = req.res.locals.oldTokenPair as ITokenPair;
-      const tokenPayload = req.res.locals.jwtPayload as ITokenPayload;
-      const jwtTokens = await authService.refresh(oldTokenPair, tokenPayload);
+      const refreshToken = req.res.locals.refreshToken as string;
+      const jwtPayload = req.res.locals.jwtPayload as ITokenPayload;
+      const jwtTokens = await authService.refresh(refreshToken, jwtPayload);
       return res.json({ data: jwtTokens });
     } catch (e) {
       next(e);

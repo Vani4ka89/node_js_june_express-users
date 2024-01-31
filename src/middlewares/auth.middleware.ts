@@ -4,7 +4,7 @@ import { ERole, ETokenType } from "../enums";
 // import { EActionTokenTypes, ETokenType } from "../enums";
 import { ApiError } from "../errors";
 // import { Action, Token } from "../models";
-import { Token } from "../models";
+import { tokenRepository } from "../repositories";
 import { tokenService } from "../services";
 
 class AuthMiddleware {
@@ -25,7 +25,7 @@ class AuthMiddleware {
           ETokenType.Access,
           role,
         );
-        const entity = await Token.findOne({ accessToken });
+        const entity = await tokenRepository.getOneByParams({ accessToken });
         if (!entity) {
           throw new ApiError("Token not valid", 401);
         }
@@ -55,11 +55,11 @@ class AuthMiddleware {
           ETokenType.Refresh,
           role,
         );
-        const entity = await Token.findOne({ refreshToken });
+        const entity = await tokenRepository.getOneByParams({ refreshToken });
         if (!entity) {
           throw new ApiError("Token not valid", 401);
         }
-        req.res.locals.oldTokenPair = entity;
+        req.res.locals.refreshToken = entity.refreshToken;
         req.res.locals.jwtPayload = { _userId: payload._userId };
         next();
       } catch (e) {

@@ -1,10 +1,8 @@
+import { Types } from "mongoose";
+
 import { EEmailActions, ERole } from "../enums";
 import { ApiError } from "../errors";
-import {
-  authRepository,
-  tokenRepository,
-  userRepository,
-} from "../repositories";
+import { tokenRepository, userRepository } from "../repositories";
 import { ILogin, ITokenPair, ITokenPayload, IUser } from "../types";
 import { emailService } from "./email.service";
 import { passwordService } from "./password.service";
@@ -76,25 +74,24 @@ class AuthService {
   }
 
   public async refresh(
-    oldTokenPair: ITokenPair,
-    tokenPayload: ITokenPayload,
+    refreshToken: string,
+    jwtPayload: ITokenPayload,
   ): Promise<ITokenPair> {
     try {
-      const user = await userRepository.getById(
-        tokenPayload._userId.toString(),
-      );
+      await tokenRepository.deleteOneByParams({ refreshToken });
+
       const jwtTokens = tokenService.generateTokenPair(
         {
-          _userId: tokenPayload._userId,
-          role: user.role,
+          _userId: jwtPayload._userId,
+          role: jwtPayload.role,
         },
-        user.role,
+        jwtPayload.role,
       );
-      return await authRepository.refresh(
-        jwtTokens,
-        tokenPayload,
-        oldTokenPair,
-      );
+      await tokenRepository.create({
+        ...jwtTokens,
+        _userId: new Types.ObjectId(jwtPayload._userId),
+      });
+      return jwtTokens;
     } catch (e) {
       throw new ApiError(e.message, e.status);
     }
